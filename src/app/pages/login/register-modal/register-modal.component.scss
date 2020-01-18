@@ -1,9 +1,14 @@
-#login-title {
-  color: #8200d9;
+.color-purple {
+  --background: #8200d9;
+}
+
+ion-title#register-title {
   text-align: center;
-  font-weight: bold;
-  font-size: 44px;
-  margin-top: 80px;
+  margin-left: -50px;
+}
+
+.color-white {
+  color: #FFFFFF;
 }
 
 ion-card#login-form-card {
@@ -21,13 +26,4 @@ ion-label.login-label {
 
 ion-button.login-submit-button {
   margin-top: 20px;
-}
-
-.color-purple {
-  --background: #8200d9;
-}
-
-#register-text {
-  margin-left: 40px;
-  margin-right: 40px;
 }
