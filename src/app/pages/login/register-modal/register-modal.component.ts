@@ -29,9 +29,16 @@ export class RegisterModalComponent implements OnInit {
     // TODO: register form validators
     this.registerForm = this.formBuilder.group({
       email: ['', Validators.required],
-      password: ['', Validators.required],
-      repeat_password: ['', Validators.required],
-    });
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      repeat_password: ['', Validators.required, Validators.minLength(6)],
+    }, {Validators: this.checkPasswords });
+  }
+
+  checkPasswords(group: FormGroup) { // here we have the 'passwords' group
+    const password = group.get('password').value;
+    const confirmPassword = group.get('repeat_password').value;
+
+    return password === confirmPassword ? null : { notSame: true };
   }
 
   dismissModal() {
