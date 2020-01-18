@@ -24,10 +24,7 @@ export class AuthService {
           email
         };
         this.firestore.collection('users')
-          .add(data)
-          .then(() => {
-            console.log('Successfully registered');
-          });
+          .add(data);
       })
       .catch(error => {
         console.error(error);

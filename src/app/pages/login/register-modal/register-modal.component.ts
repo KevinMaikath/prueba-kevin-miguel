@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {ModalController} from '@ionic/angular';
+import {LoadingController, ModalController} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthService} from '../../../services/auth/auth.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-register-modal',
@@ -11,10 +12,13 @@ import {AuthService} from '../../../services/auth/auth.service';
 export class RegisterModalComponent implements OnInit {
 
   registerForm: FormGroup;
+  loading: HTMLIonLoadingElement;
 
   constructor(private modalCtrl: ModalController,
               private formBuilder: FormBuilder,
-              private authService: AuthService) {
+              private authService: AuthService,
+              private loadingCtrl: LoadingController,
+              private router: Router) {
   }
 
   ngOnInit() {
@@ -34,19 +38,21 @@ export class RegisterModalComponent implements OnInit {
     this.modalCtrl.dismiss();
   }
 
-  onRegisterSubmit() {
-    // console.log(this.registerForm.get('email').value + '__'
-    //   + this.registerForm.get('password').value + '___'
-    //   + this.registerForm.get('repeat_password').value);
+  async onRegisterSubmit() {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
+
     const email: string = this.registerForm.get('email').value;
     const password: string = this.registerForm.get('password').value;
 
     this.authService.registerUser(email, password)
-      .then(
-        () => {
-          this.modalCtrl.dismiss();
-        })
+      .then(() => {
+        this.loading.dismiss();
+        this.modalCtrl.dismiss();
+        this.router.navigateByUrl('/home');
+      })
       .catch((err) => {
+        this.loading.dismiss();
         console.log('ERROR: ' + err.message);
       });
   }
