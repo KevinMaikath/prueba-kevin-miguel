@@ -9,7 +9,7 @@ import {AngularFireStorage} from '@angular/fire/storage';
 export class DatabaseService {
 
   constructor(private firestore: AngularFirestore,
-              private storage: AngularFireStorage) {
+              private fireStorage: AngularFireStorage) {
   }
 
   /**
@@ -23,7 +23,8 @@ export class DatabaseService {
    * Upload a base64 image to Firebase Storage
    */
   uploadImage(base64Image: string) {
-    // TODO uploadImage
+    const newID = this.firestore.createId();
+    this.fireStorage.storage.refFromURL('gs://squaads-vision').child(newID).putString(base64Image, 'data_url');
   }
 
 }
