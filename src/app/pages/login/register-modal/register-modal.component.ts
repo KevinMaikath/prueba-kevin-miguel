@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ModalController} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {AuthService} from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-register-modal',
@@ -12,7 +13,8 @@ export class RegisterModalComponent implements OnInit {
   registerForm: FormGroup;
 
   constructor(private modalCtrl: ModalController,
-              private formBuilder: FormBuilder) {
+              private formBuilder: FormBuilder,
+              private authService: AuthService) {
   }
 
   ngOnInit() {
@@ -33,8 +35,19 @@ export class RegisterModalComponent implements OnInit {
   }
 
   onRegisterSubmit() {
-    console.log(this.registerForm.get('email').value + '__'
-      + this.registerForm.get('password').value + '___'
-      + this.registerForm.get('repeat_password').value);
+    // console.log(this.registerForm.get('email').value + '__'
+    //   + this.registerForm.get('password').value + '___'
+    //   + this.registerForm.get('repeat_password').value);
+    const email: string = this.registerForm.get('email').value;
+    const password: string = this.registerForm.get('password').value;
+
+    this.authService.registerUser(email, password)
+      .then(
+        () => {
+          this.modalCtrl.dismiss();
+        })
+      .catch((err) => {
+        console.log('ERROR: ' + err.message);
+      });
   }
 }
