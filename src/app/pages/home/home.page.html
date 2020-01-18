@@ -1,13 +1,36 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>home</ion-title>
+  <ion-toolbar class="color-purple">
+    <ion-buttons slot="start">
+      <ion-button (click)="logout()" class="color-white">
+        <ion-icon name="exit" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title id="home-title" class="color-white">Home</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
 
-  <ion-button (click)="logout()">
-    Log Out
-  </ion-button>
+  <ion-grid>
+    <ion-row *ngFor="let imageArray of splitImageList">
+      <ion-col size="6" class="card-col" *ngFor="let image of imageArray">
+        <ion-card button="true">
+          <ion-card-content class="card-image">
+            <ion-img [src]="image.imageUrl"></ion-img>
+          </ion-card-content>
+
+          <!--    It has a dog      -->
+          <ion-card-header *ngIf="image.isDog" color="success" class="card-isDog">
+            <ion-card-subtitle><strong>It has a dog</strong></ion-card-subtitle>
+          </ion-card-header>
+
+          <!--    It doesn't have a dog      -->
+          <ion-card-header *ngIf="!image.isDog" color="danger" class="card-isDog">
+            <ion-card-subtitle><strong>It doesn't have a dog</strong></ion-card-subtitle>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
 </ion-content>
