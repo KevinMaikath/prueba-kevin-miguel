@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-toolbar class="color-purple">
+    <ion-buttons slot="start">
+      <ion-button (click)="dismissModal()" class="color-white">
+        <ion-icon name="arrow-back" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title id="register-title" class="color-white">Register</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card id="login-form-card">
+    <ion-card-content>
+      <form [formGroup]="registerForm" (ngSubmit)="onRegisterSubmit()">
+        <ion-item>
+          <ion-label class="login-label" position="stacked">Email:</ion-label>
+          <ion-input
+              class="login-input"
+              type="text"
+              formControlName="email"
+              placeholder="puppy@email.com"
+          >
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label class="login-label" position="stacked">Password:</ion-label>
+          <ion-input
+              class="login-input"
+              type="password"
+              formControlName="password"
+              placeholder="******"
+          >
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label class="login-label" position="stacked">Confirm Password:</ion-label>
+          <ion-input
+              class="login-input"
+              type="password"
+              formControlName="repeat_password"
+              placeholder="******"
+          >
+          </ion-input>
+        </ion-item>
+
+        <ion-button class="login-submit-button color-purple" type="submit" expand="block">Register</ion-button>
+      </form>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

@@ -1,0 +1,33 @@
+#login-title {
+  color: #8200d9;
+  text-align: center;
+  font-weight: bold;
+  font-size: 44px;
+  margin-top: 80px;
+}
+
+ion-card#login-form-card {
+  margin: 40px;
+  --background: #FFFFFF;
+}
+
+ion-input.login-input {
+  margin-top: 15px;
+}
+
+ion-label.login-label {
+  font-size: 20px;
+}
+
+ion-button.login-submit-button {
+  margin-top: 20px;
+}
+
+.color-purple {
+  --background: #8200d9;
+}
+
+#register-text {
+  margin-left: 40px;
+  margin-right: 40px;
+}
