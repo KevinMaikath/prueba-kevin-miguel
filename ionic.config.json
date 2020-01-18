@@ -1,5 +1,7 @@
 {
   "name": "prueba-kevin-miguel",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular"
 }

@@ -1,7 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ModalController} from '@ionic/angular';
+import {LoadingController, ModalController, ToastController} from '@ionic/angular';
 import {RegisterModalComponent} from './register-modal/register-modal.component';
+import {AuthService} from '../../services/auth/auth.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -11,9 +13,14 @@ import {RegisterModalComponent} from './register-modal/register-modal.component'
 export class LoginPage implements OnInit {
 
   loginForm: FormGroup;
+  loading: HTMLIonLoadingElement;
 
   constructor(private formBuilder: FormBuilder,
-              private modalCtrl: ModalController) {
+              private modalCtrl: ModalController,
+              private authService: AuthService,
+              private router: Router,
+              private loadingCtrl: LoadingController,
+              private toastCtrl: ToastController) {
   }
 
   ngOnInit() {
@@ -28,8 +35,29 @@ export class LoginPage implements OnInit {
     });
   }
 
-  onLoginSubmit() {
-    console.log(this.loginForm.get('email').value + this.loginForm.get('password').value);
+  async onLoginSubmit() {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
+
+    const email: string = this.loginForm.get('email').value;
+    const password: string = this.loginForm.get('password').value;
+
+    this.authService.loginUser(email, password)
+      .then(() => {
+        this.loading.dismiss();
+        this.router.navigateByUrl('/home');
+      })
+      .catch((err) => {
+        this.loading.dismiss();
+
+        if (err.code === 'auth/invalid-email' ||
+          err.code === 'auth/wrong-password') {
+          this.notifyWithToast('Incorrect credentials');
+        } else {
+          this.notifyWithToast('An unexpected error ocurred');
+        }
+
+      });
   }
 
   async onRegisterClicked() {
@@ -38,6 +66,15 @@ export class LoginPage implements OnInit {
     });
 
     return await modal.present();
+  }
+
+  async notifyWithToast(message: string) {
+    const toast = await this.toastCtrl.create({
+      message,
+      duration: 1500,
+      color: 'danger'
+    });
+    await toast.present();
   }
 
 }
