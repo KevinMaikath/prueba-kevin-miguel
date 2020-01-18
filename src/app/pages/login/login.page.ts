@@ -29,9 +29,8 @@ export class LoginPage implements OnInit {
 
   formInit() {
     this.loginForm = this.formBuilder.group({
-      // TODO: login form validators
-      email: ['', [Validators.required]],
-      password: ['', [Validators.required]]
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
 
