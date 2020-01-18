@@ -6,5 +6,10 @@
 typings/
 
 node_modules/
+<<<<<<< HEAD
 ./config.ts
 /src/environments/
+=======
+
+./config.ts
+>>>>>>> master
