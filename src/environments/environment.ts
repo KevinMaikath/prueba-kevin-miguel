@@ -7,7 +7,7 @@ export const environment = {
   firebase: {
     apiKey: 'AIzaSyBLbaSJ_yjp9pYekNZjlS6ICC2LZG5-Fhg',
     authDomain: 'squaads-test.firebaseapp.com',
-    databaseURL: 'https://squaads-test.firebaseio.com',
+    databaseURL: 'https://squaads-test.firebaseio.com/',
     projectId: 'squaads-test',
     storageBucket: 'squaads-test.appspot.com',
     messagingSenderId: '425243967389',

@@ -11,11 +11,12 @@
 
 <ion-content>
 
+  <!--  Image preview grid -->
   <ion-grid>
     <ion-row *ngFor="let imageArray of splitImageList">
       <ion-col size="6" class="card-col" *ngFor="let image of imageArray">
         <ion-card button="true">
-          <ion-card-content class="card-image">
+          <ion-card-content>
             <ion-img [src]="image.imageUrl"></ion-img>
           </ion-card-content>
 
@@ -32,5 +33,11 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+
+  <ion-fab horizontal="end" vertical="bottom" slot="fixed">
+    <ion-fab-button class="color-purple" (click)="onAddClicked()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 
 </ion-content>
