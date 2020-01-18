@@ -1,0 +1,38 @@
+<ion-content>
+
+  <ion-text>
+    <p id="login-title">Welcome</p>
+  </ion-text>
+
+  <ion-card id="login-form-card">
+    <ion-card-content>
+      <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()">
+        <ion-item>
+          <ion-label class="login-label" position="stacked">Email:</ion-label>
+          <ion-input
+              class="login-input"
+              type="text"
+              formControlName="email"
+              placeholder="puppy@email.com"
+          >
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label class="login-label" position="stacked">Password:</ion-label>
+          <ion-input
+              class="login-input"
+              type="password"
+              formControlName="password"
+              placeholder="******"
+          >
+          </ion-input>
+        </ion-item>
+
+        <ion-button class="login-submit-button" type="submit">Log In</ion-button>
+      </form>
+    </ion-card-content>
+  </ion-card>
+
+
+</ion-content>
