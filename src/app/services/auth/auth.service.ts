@@ -19,12 +19,12 @@ export class AuthService {
     return this.fireAuth.auth
       .createUserWithEmailAndPassword(email, password)
       .then((newUserCredential: firebase.auth.UserCredential) => {
-        const newDoc = this.firestore.collection('users').doc(email);
         const data = {
           userID: newUserCredential.user.uid,
           email
         };
-        newDoc.set(data)
+        this.firestore.collection('users')
+          .add(data)
           .then(() => {
             console.log('Successfully registered');
           });
@@ -33,5 +33,9 @@ export class AuthService {
         console.error(error);
         throw new Error(error);
       });
+  }
+
+  logoutUser(): Promise<void> {
+    return this.fireAuth.auth.signOut();
   }
 }

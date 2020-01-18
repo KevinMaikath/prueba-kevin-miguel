@@ -5,13 +5,13 @@
 export const environment = {
   production: false,
   firebase: {
-    apiKey: 'AIzaSyB45WzSgIeVB33xHQoJojwYVQzUegMvAJ4',
-    authDomain: 'squaads.firebaseapp.com',
-    databaseURL: 'https://squaads.firebaseio.com/',
-    projectId: 'squaads',
-    storageBucket: 'squaads.appspot.com',
-    messagingSenderId: '421900651188',
-    appId: '1:421900651188:web:0807b4a228b4c570bee5e1'
+    apiKey: 'AIzaSyBLbaSJ_yjp9pYekNZjlS6ICC2LZG5-Fhg',
+    authDomain: 'squaads-test.firebaseapp.com',
+    databaseURL: 'https://squaads-test.firebaseio.com',
+    projectId: 'squaads-test',
+    storageBucket: 'squaads-test.appspot.com',
+    messagingSenderId: '425243967389',
+    appId: '1:425243967389:web:22be920c39de5a063ab974'
   }
 };
 

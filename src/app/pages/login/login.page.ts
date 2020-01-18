@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ModalController} from '@ionic/angular';
 import {RegisterModalComponent} from './register-modal/register-modal.component';
+import {AuthService} from '../../services/auth/auth.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +15,9 @@ export class LoginPage implements OnInit {
   loginForm: FormGroup;
 
   constructor(private formBuilder: FormBuilder,
-              private modalCtrl: ModalController) {
+              private modalCtrl: ModalController,
+              private authService: AuthService,
+              private router: Router) {
   }
 
   ngOnInit() {
@@ -29,7 +33,17 @@ export class LoginPage implements OnInit {
   }
 
   onLoginSubmit() {
-    console.log(this.loginForm.get('email').value + this.loginForm.get('password').value);
+    // console.log(this.loginForm.get('email').value + this.loginForm.get('password').value);
+    const email: string = this.loginForm.get('email').value;
+    const password: string = this.loginForm.get('password').value;
+
+    this.authService.loginUser(email, password)
+      .then(() => {
+        this.router.navigateByUrl('/home');
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
   }
 
   async onRegisterClicked() {
