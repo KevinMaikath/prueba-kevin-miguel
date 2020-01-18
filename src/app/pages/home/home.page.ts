@@ -3,6 +3,7 @@ import {AuthService} from '../../services/auth/auth.service';
 import {DatabaseService} from '../../services/database.service';
 import {ImagePreview} from '../../models/image-preview';
 import {ActionSheetController, AlertController} from '@ionic/angular';
+import {Camera, CameraOptions} from '@ionic-native/camera/ngx';
 
 @Component({
   selector: 'app-home',
@@ -18,7 +19,8 @@ export class HomePage implements OnInit {
 
   constructor(private authService: AuthService,
               private database: DatabaseService,
-              private actionSheetCtrl: ActionSheetController) {
+              private actionSheetCtrl: ActionSheetController,
+              private camera: Camera) {
   }
 
   ngOnInit() {
@@ -85,15 +87,41 @@ export class HomePage implements OnInit {
     });
   }
 
-  takePictureWithCamera() {
-    this.addImageActionSheet.dismiss();
+  async takePictureWithCamera() {
+    const options: CameraOptions = {
+      quality: 100,
+      destinationType: this.camera.DestinationType.DATA_URL,
+      encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.PICTURE,
+      sourceType: this.camera.PictureSourceType.CAMERA
+    };
+
+    await this.camera.getPicture(options).then((imageData) => {
+      const base64Image = 'data:image/jpeg;base64,' + imageData;
+      this.database.uploadImage(base64Image);
+    }, (err) => {
+      console.log(err);
+    });
   }
 
-  getPictureFromGallery() {
-    this.addImageActionSheet.dismiss();
+  async getPictureFromGallery() {
+    const options: CameraOptions = {
+      quality: 100,
+      destinationType: this.camera.DestinationType.DATA_URL,
+      encodingType: this.camera.EncodingType.JPEG,
+      sourceType: this.camera.PictureSourceType.PHOTOLIBRARY
+    };
+
+    await this.camera.getPicture(options).then((imageData) => {
+      const base64Image = 'data:image/jpeg;base64,' + imageData;
+      this.database.uploadImage(base64Image);
+    }, (err) => {
+      console.log(err);
+    });
   }
 
   actionSheetCancel() {
     this.addImageActionSheet.dismiss();
   }
+
 }
