@@ -3,7 +3,7 @@ import * as functions from "firebase-functions";
 
 // CLarifai
 const Clarifai = require("clarifai");
-const config = require('../config.ts');;
+const config = require("../config.ts");
 
 const app = new Clarifai.App({
   apiKey: config.apiKey
@@ -11,6 +11,7 @@ const app = new Clarifai.App({
 
 // Firebase
 import * as admin from "firebase-admin";
+import { DocumentReference } from "@google-cloud/firestore";
 
 admin.initializeApp(functions.config().firebase);
 
@@ -24,7 +25,7 @@ const collectionPath: string = "photos";
 const collectionPathClarifai: string = "photosClarifai";
 
 /**
- * Once a new image has been detected, it will be processed (with Google Cloud Vision API) 
+ * Once a new image has been detected, it will be processed (with Google Cloud Vision API)
  * and its results (isDog, imageUrl and labels) stored in a database document
  */
 export const imageTagger = functions.storage
@@ -38,9 +39,7 @@ export const imageTagger = functions.storage
     const imageUri: string = `gs://${bucketName}/${filePath}`;
 
     // Getting image url
-    const metadata: any = object.metadata || "";
-    const token: string = metadata.firebaseStorageDownloadTokens;
-    const imageUrl: string = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${filePath}?alt=media&token=${token}`;
+    const imageUrl: string = getImageUrl(filePath, object);
 
     // Doc reference to save image processing results
     const docRef = admin
@@ -52,18 +51,19 @@ export const imageTagger = functions.storage
     const results = await visionClient.labelDetection(imageUri);
 
     // Map the data to desired format
-    const labels = results[0].labelAnnotations.map(
-      (obj: { description: any; score: any }) => { return {name: obj.description, value: obj.score}}
-    );
+    const onlyNameAndValue = (o: any) => {
+      return { name: o.description, value: o.score };
+    };
+    const labels = results[0].labelAnnotations.map(onlyNameAndValue);
 
     // Checking if the 'Dog' tag exists in labels
-    const isDog = labels.findIndex((label: any) => {return label.name === 'Dog'}) !== -1;
+    const isDog = isLabel(labels, "dog");
 
     return docRef.set({ isDog, imageUrl, labels });
   });
 
 /**
- * Once a new image has been detected, it will be processed (with Clarifai API) 
+ * Once a new image has been detected, it will be processed (with Clarifai API)
  * and its results (isDog, imageUrl and labels) stored in a database document
  */
 export const imageTaggerClarifai = functions.storage
@@ -71,18 +71,16 @@ export const imageTaggerClarifai = functions.storage
   .object()
   .onFinalize(async object => {
     // File data
-    const filePath: string = object.name || '';
+    const filePath: string = object.name || "";
 
     // Doc reference to save image processing results
-    const docRef = admin
+    const docRef: DocumentReference = admin
       .firestore()
       .collection(collectionPathClarifai)
       .doc();
 
     // Getting image url
-    const metadata: any = object.metadata || "";
-    const token: string = metadata.firebaseStorageDownloadTokens;
-    const imageUrl: string = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${filePath}?alt=media&token=${token}`;
+    const imageUrl: string = getImageUrl(filePath, object);
 
     // Await the Clarifai response
     app.models
@@ -95,9 +93,39 @@ export const imageTaggerClarifai = functions.storage
       })
       .then((response: any) => {
         const concepts = response["outputs"][0]["data"]["concepts"];
-        const labels = concepts.map((concept: any) => {return {name: concept.name, value: concept.value}});
-        const isDog = labels.findIndex((label: any) => {return label.name === 'dog'}) !== -1;
+        const onlyNameAndValue = (c: any) => {
+          return { name: c.name, value: c.value };
+        };
+        const labels = concepts.map(onlyNameAndValue);
+        const isDog = isLabel(labels, "dog");
 
         return docRef.set({ isDog, imageUrl, labels });
       });
   });
+
+/**
+ * Gets the image url
+ * @param filePath
+ * @param object
+ */
+const getImageUrl = (
+  filePath: string,
+  object: functions.storage.ObjectMetadata
+): string => {
+  const metadata: any = object.metadata;
+  const token: string = metadata.firebaseStorageDownloadTokens;
+  return `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${filePath}?alt=media&token=${token}`;
+};
+
+/**
+ * Finds out if there is a certain label in the array
+ * @param labels Array of labels
+ * @param name Label name to look for
+ */
+const isLabel = (labels: any[], name: string): boolean => {
+  return (
+    labels.findIndex((label: any) => {
+      label.name.toLowerCase() === name;
+    }) !== -1
+  );
+};
