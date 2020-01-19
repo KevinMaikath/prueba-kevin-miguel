@@ -1,1 +1,100 @@
+<ion-header>
+  <ion-toolbar class="color-purple">
+    <ion-buttons slot="start">
+      <ion-button (click)="onBackPressed()" class="color-white">
+        <ion-icon name="arrow-back" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title id="details-title" class="color-white">Details</ion-title>
+  </ion-toolbar>
+</ion-header>
 
+<ion-content>
+
+  <ion-img [src]="image.imageUrl"></ion-img>
+
+  <ion-segment (ionChange)="segmentChanged($event)">
+    <ion-segment-button value="Google" checked>
+      <ion-label>Google</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="Clarifai">
+      <ion-label>Clarifai</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <div [ngSwitch]="selectedSegment">
+
+    <!--  Google selected -->
+    <ion-list *ngSwitchCase="'Google'">
+
+      <div *ngIf="image.isDogGoogle">
+        <ion-list-header>
+          <ion-label class="value-label">Doggo</ion-label>
+        </ion-list-header>
+        <ion-item>
+          <ion-progress-bar color="danger" value="1"></ion-progress-bar>
+        </ion-item>
+      </div>
+
+      <div *ngIf="!image.isDogGoogle">
+        <ion-list-header>
+          <ion-label class="value-label">No Doggo</ion-label>
+        </ion-list-header>
+        <ion-item>
+          <ion-progress-bar color="danger" value="1"></ion-progress-bar>
+        </ion-item>
+      </div>
+
+      <!--  Google labels    -->
+      <div *ngFor="let label of image.labelsGoogle">
+        <ion-list-header>
+          <ion-label class="value-label">
+            {{ label.name }} - {{ (label.value * 100).toFixed(2) + '%'}}
+          </ion-label>
+        </ion-list-header>
+        <ion-item>
+          <ion-progress-bar [value]="label.value"></ion-progress-bar>
+        </ion-item>
+      </div>
+
+    </ion-list>
+
+    <!--  Clarifai selected -->
+    <ion-list *ngSwitchCase="'Clarifai'">
+
+      <div *ngIf="image.isDogClarifai">
+        <ion-list-header>
+          <ion-label class="value-label">Doggo</ion-label>
+        </ion-list-header>
+        <ion-item>
+          <ion-progress-bar color="danger" value="1"></ion-progress-bar>
+        </ion-item>
+      </div>
+
+      <div *ngIf="!image.isDogClarifai">
+        <ion-list-header>
+          <ion-label class="value-label">No Doggo</ion-label>
+        </ion-list-header>
+        <ion-item>
+          <ion-progress-bar color="danger" value="1"></ion-progress-bar>
+        </ion-item>
+      </div>
+
+      <!--  Google labels    -->
+      <div *ngFor="let label of image.labelsClarifai">
+        <ion-list-header>
+          <ion-label class="value-label">
+            {{ label.name }} - {{ (label.value * 100).toFixed(2) + '%'}}
+          </ion-label>
+        </ion-list-header>
+        <ion-item>
+          <ion-progress-bar [value]="label.value"></ion-progress-bar>
+        </ion-item>
+      </div>
+
+    </ion-list>
+
+  </div>
+
+
+</ion-content>
