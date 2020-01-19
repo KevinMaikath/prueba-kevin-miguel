@@ -27,7 +27,6 @@ export class RegisterModalComponent implements OnInit {
   }
 
   formInit() {
-    // TODO: register form validators
     this.registerForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
@@ -35,14 +34,7 @@ export class RegisterModalComponent implements OnInit {
     });
   }
 
-  checkPasswords(group: FormGroup) {
-    const password = group.get('password').value;
-    const confirmPassword = group.get('repeat_password').value;
-
-    return password === confirmPassword ? null : {notSame: true};
-  }
-
-  dismissModal() {
+  onBackPressed() {
     this.modalCtrl.dismiss();
   }
 
