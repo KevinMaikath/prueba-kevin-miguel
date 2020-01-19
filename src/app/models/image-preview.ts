@@ -1,4 +1,7 @@
 export class ImagePreview {
   imageUrl: string;
-  isDog: boolean;
+  isDogClarifai: boolean;
+  isDogGoogle: boolean;
+  labelsClarifai: {name: string, value: number}[];
+  labelsGoogle: {name: string, value: number}[];
 }

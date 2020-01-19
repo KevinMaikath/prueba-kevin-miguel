@@ -9,6 +9,7 @@ import {HomePageRoutingModule} from './home-routing.module';
 import {HomePage} from './home.page';
 
 import {Camera} from '@ionic-native/camera/ngx';
+import {DetailsModalComponent} from './details-modal/details-modal.component';
 
 @NgModule({
   imports: [
@@ -17,8 +18,9 @@ import {Camera} from '@ionic-native/camera/ngx';
     IonicModule,
     HomePageRoutingModule
   ],
-  declarations: [HomePage],
-  providers: [Camera]
+  declarations: [HomePage, DetailsModalComponent],
+  providers: [Camera],
+  entryComponents: [DetailsModalComponent]
 })
 export class HomePageModule {
 }
