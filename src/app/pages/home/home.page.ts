@@ -2,9 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {AuthService} from '../../services/auth/auth.service';
 import {DatabaseService} from '../../services/database.service';
 import {ImagePreview} from '../../models/image-preview';
-import {ActionSheetController, AlertController, ModalController} from '@ionic/angular';
+import {ActionSheetController, AlertController, ModalController, NavController} from '@ionic/angular';
 import {Camera, CameraOptions} from '@ionic-native/camera/ngx';
 import {DetailsModalComponent} from './details-modal/details-modal.component';
+import {Navigation, Router} from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -28,6 +29,9 @@ export class HomePage implements OnInit {
   ngOnInit() {
     this.imageList = [];
     this.splitImageList = [];
+  }
+
+  ionViewWillEnter() {
     this.loadData();
   }
 
@@ -40,7 +44,9 @@ export class HomePage implements OnInit {
         this.imageList = [];
         querySnapshot.forEach((docSnapshot) => {
           const image = docSnapshot.payload.doc.data() as ImagePreview;
-          this.imageList.push(image);
+          if (image.userId === this.database.getUserIdentifier()) {
+            this.imageList.push(image);
+          }
         });
         this.splitImagesInTwo();
       });
