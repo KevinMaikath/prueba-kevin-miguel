@@ -2,8 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {AuthService} from '../../services/auth/auth.service';
 import {DatabaseService} from '../../services/database.service';
 import {ImagePreview} from '../../models/image-preview';
-import {ActionSheetController, AlertController} from '@ionic/angular';
+import {ActionSheetController, AlertController, ModalController} from '@ionic/angular';
 import {Camera, CameraOptions} from '@ionic-native/camera/ngx';
+import {DetailsModalComponent} from './details-modal/details-modal.component';
 
 @Component({
   selector: 'app-home',
@@ -20,7 +21,8 @@ export class HomePage implements OnInit {
   constructor(private authService: AuthService,
               private database: DatabaseService,
               private actionSheetCtrl: ActionSheetController,
-              private camera: Camera) {
+              private camera: Camera,
+              private modalCtrl: ModalController) {
   }
 
   ngOnInit() {
@@ -29,6 +31,9 @@ export class HomePage implements OnInit {
     this.loadData();
   }
 
+  /**
+   * Get the data needed for the image preview list.
+   */
   loadData() {
     this.database.getImageListObservable()
       .subscribe(querySnapshot => {
@@ -45,6 +50,9 @@ export class HomePage implements OnInit {
     this.authService.logoutUser();
   }
 
+  /**
+   * Split the imagePreviewList in 2, for easier layout handling.
+   */
   private splitImagesInTwo() {
     this.splitImageList = [];
     let i, j;
@@ -59,6 +67,9 @@ export class HomePage implements OnInit {
     await this.addImageActionSheet.present();
   }
 
+  /**
+   * Initialize the action sheet buttons.
+   */
   async actionSheetInit() {
     this.addImageActionSheet = await this.actionSheetCtrl.create({
       header: 'Add an image from',
@@ -124,4 +135,19 @@ export class HomePage implements OnInit {
     this.addImageActionSheet.dismiss();
   }
 
+  onImageClicked(image: ImagePreview) {
+    this.presentDetailsModal(image);
+
+  }
+
+  async presentDetailsModal(image: ImagePreview) {
+    const modal = await this.modalCtrl.create({
+      component: DetailsModalComponent,
+      componentProps: {
+        image
+      }
+    });
+
+    return await modal.present();
+  }
 }

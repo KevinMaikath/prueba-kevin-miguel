@@ -15,10 +15,16 @@ export class AuthService {
               private firestore: AngularFirestore) {
   }
 
+  /**
+   *  Login with Firebase Auth.
+   */
   loginUser(email: string, password: string): Promise<firebase.auth.UserCredential> {
     return this.fireAuth.auth.signInWithEmailAndPassword(email, password);
   }
 
+  /**
+   *  Create user in Firebase Auth.
+   */
   registerUser(email: string, password: string) {
     return this.fireAuth.auth
       .createUserWithEmailAndPassword(email, password)
@@ -27,11 +33,13 @@ export class AuthService {
           userID: newUserCredential.user.uid,
           email
         };
-        this.firestore.collection('users')
-          .add(data);
+        this.firestore.collection('users').add(data);
       });
   }
 
+  /**
+   *  Logout from Firebase Auth.
+   */
   logoutUser(): Promise<void> {
     return this.fireAuth.auth.signOut();
   }

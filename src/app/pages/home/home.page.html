@@ -15,19 +15,19 @@
   <ion-grid>
     <ion-row *ngFor="let imageArray of splitImageList">
       <ion-col size="6" class="card-col" *ngFor="let image of imageArray">
-        <ion-card button="true">
+        <ion-card button="true" (click)="onImageClicked(image)">
           <ion-card-content>
             <ion-img [src]="image.imageUrl"></ion-img>
           </ion-card-content>
 
           <!--    It has a dog      -->
-          <ion-card-header *ngIf="image.isDog" color="success" class="card-isDog">
-            <ion-card-subtitle><strong>It has a dog</strong></ion-card-subtitle>
+          <ion-card-header *ngIf="image.isDogClarifai && image.isDogGoogle" color="success" class="card-isDog">
+            <ion-card-subtitle><strong>Doggo</strong></ion-card-subtitle>
           </ion-card-header>
 
           <!--    It doesn't have a dog      -->
-          <ion-card-header *ngIf="!image.isDog" color="danger" class="card-isDog">
-            <ion-card-subtitle><strong>It doesn't have a dog</strong></ion-card-subtitle>
+          <ion-card-header *ngIf="!image.isDogClarifai || !image.isDogGoogle" color="danger" class="card-isDog">
+            <ion-card-subtitle><strong>No Doggo</strong></ion-card-subtitle>
           </ion-card-header>
         </ion-card>
       </ion-col>
