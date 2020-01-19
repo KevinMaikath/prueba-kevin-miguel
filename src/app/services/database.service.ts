@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {AngularFirestore, DocumentChangeAction} from '@angular/fire/firestore';
 import {Observable} from 'rxjs';
 import {AngularFireStorage} from '@angular/fire/storage';
+import {AngularFireAuth} from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,8 @@ export class DatabaseService {
   FIREBASE_STORAGE_VISION_ROOT_URL = 'gs://squaads-vision';
 
   constructor(private firestore: AngularFirestore,
-              private fireStorage: AngularFireStorage) {
+              private fireStorage: AngularFireStorage,
+              private fireAuth: AngularFireAuth) {
   }
 
   /**
@@ -26,9 +28,14 @@ export class DatabaseService {
    */
   uploadImage(base64Image: string) {
     const newID = this.firestore.createId();
+    const userID = this.getUserIdentifier();
     this.fireStorage.storage.refFromURL(this.FIREBASE_STORAGE_VISION_ROOT_URL)
-      .child(newID)
+      .child(`${newID}.${userID}`)
       .putString(base64Image, 'data_url');
+  }
+
+  getUserIdentifier() {
+    return this.fireAuth.auth.currentUser.uid;
   }
 
 }

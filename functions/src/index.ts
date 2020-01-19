@@ -32,6 +32,9 @@ export const imageTagger = functions.storage
     // File data
     const filePath: string = object.name || "";
 
+    // User who uploads the image
+    const userId: string = filePath.split('.')[1];
+
     // Location of saved file in bucket
     const imageUri: string = `gs://${bucketName}/${filePath}`;
 
@@ -53,7 +56,7 @@ export const imageTagger = functions.storage
     );
 
     // Checking if the 'Dog' tag exists in labels
-    const isDogGoogle = isLabel(labelsGoogle, "dog");
+    const isDogGoogle = isLabel(labelsGoogle, 'Dog');
 
     // Await the Clarifai response
     app.models
@@ -67,10 +70,11 @@ export const imageTagger = functions.storage
       .then((response: any) => {
         const concepts = response["outputs"][0]["data"]["concepts"];
         const labelsClarifai = concepts.map(onlyNameAndValueClarifai);
-        const isDogClarifai = isLabel(labelsClarifai, "dog");
+        const isDogClarifai = isLabel(labelsClarifai, 'dog');
 
         return docRef.set({
           imageUrl,
+          userId,
           isDogClarifai,
           isDogGoogle,
           labelsClarifai,
@@ -99,11 +103,7 @@ const getImageUrl = (
  * @param name Label name to look for
  */
 const isLabel = (labels: any[], name: string): boolean => {
-  return (
-    labels.findIndex((label: any) => {
-      label.name.toLowerCase() === name;
-    }) !== -1
-  );
+  return labels.findIndex((label: any) => label.name === name) !== -1;
 };
 
 /**
