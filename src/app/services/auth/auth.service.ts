@@ -5,6 +5,10 @@ import {AngularFireAuth} from '@angular/fire/auth';
 @Injectable({
   providedIn: 'root'
 })
+
+/**
+ *  Provides authentication with Firebase Auth.
+ */
 export class AuthService {
 
   constructor(private fireAuth: AngularFireAuth,
@@ -25,10 +29,6 @@ export class AuthService {
         };
         this.firestore.collection('users')
           .add(data);
-      })
-      .catch(error => {
-        console.error(error);
-        throw new Error(error);
       });
   }
 

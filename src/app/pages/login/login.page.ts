@@ -27,6 +27,9 @@ export class LoginPage implements OnInit {
     this.formInit();
   }
 
+  /**
+   * Initialize the login form fields.
+   */
   formInit() {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
@@ -34,13 +37,42 @@ export class LoginPage implements OnInit {
     });
   }
 
+  /**
+   * Get the form fields values.
+   */
   async onLoginSubmit() {
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
 
-    const email: string = this.loginForm.get('email').value;
-    const password: string = this.loginForm.get('password').value;
+    if (!this.validateFields()) {
+      this.loading.dismiss();
+    } else {
+      const email: string = this.loginForm.get('email').value;
+      const password: string = this.loginForm.get('password').value;
 
+      this.authenticate(email, password);
+    }
+  }
+
+  /**
+   * Check if all the fields are correctly validated.
+   */
+  validateFields(): boolean {
+    if (!this.loginForm.get('email').valid) {
+      this.notifyWithToast('Please enter a valid email');
+      return false;
+    } else if (!this.loginForm.get('password')) {
+      this.notifyWithToast('Incorrect password');
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  /**
+   * Handle login control.
+   */
+  authenticate(email: string, password: string) {
     this.authService.loginUser(email, password)
       .then(() => {
         this.loading.dismiss();
@@ -48,17 +80,13 @@ export class LoginPage implements OnInit {
       })
       .catch((err) => {
         this.loading.dismiss();
-
-        if (err.code === 'auth/invalid-email' ||
-          err.code === 'auth/wrong-password') {
-          this.notifyWithToast('Incorrect credentials');
-        } else {
-          this.notifyWithToast('An unexpected error ocurred');
-        }
-
+        this.checkError(err);
       });
   }
 
+  /**
+   * Present register modal.
+   */
   async onRegisterClicked() {
     const modal = await this.modalCtrl.create({
       component: RegisterModalComponent,
@@ -67,6 +95,9 @@ export class LoginPage implements OnInit {
     return await modal.present();
   }
 
+  /**
+   * Present a toast with a given message.
+   */
   async notifyWithToast(message: string) {
     const toast = await this.toastCtrl.create({
       message,
@@ -74,6 +105,30 @@ export class LoginPage implements OnInit {
       color: 'danger'
     });
     await toast.present();
+  }
+
+  /**
+   *  Handle Firebase Auth errors.
+   * @param err: Firebase Authentication error.
+   */
+  checkError(err) {
+    let message = '';
+    switch (err.code) {
+      case 'auth/invalid-email':
+        message = 'Invalid email';
+        break;
+      case 'auth/wrong-password':
+        message = 'Wrong password';
+        break;
+      case 'auth/user-not-found':
+        message = 'User not found';
+        break;
+      default:
+        message = 'An unexpected error occurred';
+        console.log(err.code);
+        break;
+    }
+    this.notifyWithToast(message);
   }
 
 }
